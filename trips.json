@@ -1,0 +1,60 @@
+[
+  {
+    "title": "Family holiday to Nice",
+    "startDate": 1991-03-27,
+    "endDate": 1991-04-04,
+    "group": "Family",
+    "notes": "Drove to Rosslare, took a ferry to France, train to Paris for one night, then train to Nice for five nights, then returned in reverse.",
+    "stops": [
+      {
+        "name": "Rosslare, Ireland",
+        "lat": 52.2500,
+        "lng": -6.3400,
+        "type": "transit"
+      },
+      {
+        "name": "Paris, France",
+        "lat": 48.8566,
+        "lng": 2.3522,
+        "type": "stopover",
+        "nights": 1
+      },
+      {
+        "name": "Nice, France",
+        "lat": 43.7102,
+        "lng": 7.2620,
+        "type": "destination",
+        "nights": 5
+      },
+      {
+        "name": "Paris, France",
+        "lat": 48.8566,
+        "lng": 2.3522,
+        "type": "stopover",
+        "nights": 1
+      },
+      {
+        "name": "Rosslare, Ireland",
+        "lat": 52.2500,
+        "lng": -6.3400,
+        "type": "transit"
+      }
+    ]
+  },
+  {
+    "title": "Weekend in Copenhagen",
+    "startDate": 2019-03-05,
+    "endDate": 2019-03-08,
+    "group": "Solo",
+    "notes": "Short weekend break.",
+    "stops": [
+      {
+        "name": "Copenhagen, Denmark",
+        "lat": 55.6761,
+        "lng": 12.5683,
+        "type": "destination",
+        "nights": 2
+      }
+    ]
+  }
+]
