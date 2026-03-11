@@ -5,7 +5,7 @@
     "lng": 2.3522,
     "type": "holiday",
     "companions": "Family",
-    "year": 2018,
+    "date": 2018,
     "notes": "City break."
   },
   {
@@ -14,7 +14,7 @@
     "lng": -6.2603,
     "type": "work",
     "companions": "Colleagues",
-    "year": 2015,
+    "date": 2015,
     "notes": "Work trip."
   },
   {
@@ -23,7 +23,7 @@
     "lng": -0.1276,
     "type": "lived",
     "companions": "",
-    "year": 2010,
+    "date": 2010,
     "notes": "Lived here for several years."
   }
 ]
