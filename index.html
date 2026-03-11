@@ -1,75 +1,226 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>Where I've Been</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Where I've Been</title>
 
-<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin=""
+  />
 
-<style>
-body { margin:0; font-family:Arial; }
-#map { height:100vh; }
-</style>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: Arial, sans-serif;
+    }
 
+    #map {
+      height: 100vh;
+      width: 100%;
+    }
+
+    .legend {
+      background: white;
+      padding: 10px 12px;
+      line-height: 1.5;
+      border-radius: 8px;
+      box-shadow: 0 1px 5px rgba(0, 0, 0, 0.25);
+    }
+
+    .legend h4 {
+      margin: 0 0 8px 0;
+      font-size: 14px;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 6px;
+      font-size: 13px;
+    }
+
+    .legend-swatch {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      margin-right: 8px;
+      border: 1px solid #333;
+      flex: 0 0 12px;
+    }
+
+    .popup-title {
+      font-weight: bold;
+      font-size: 15px;
+      margin-bottom: 6px;
+    }
+
+    .popup-subtitle {
+      color: #444;
+      margin-bottom: 8px;
+    }
+
+    .popup-notes {
+      margin-top: 8px;
+    }
+  </style>
 </head>
-
 <body>
+  <div id="map"></div>
 
-<div id="map"></div>
+  <script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+    crossorigin=""
+  ></script>
 
-<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script>
+    const map = L.map("map").setView([50, 5], 4);
 
-<script>
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      attribution: "&copy; OpenStreetMap contributors"
+    }).addTo(map);
 
-var map = L.map('map').setView([40,10],2);
+    const markerColors = {
+      transit: "#6b7280",
+      stopover: "#f59e0b",
+      destination: "#2563eb"
+    };
 
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
- attribution:'© OpenStreetMap'
-}).addTo(map);
+    const routeColors = [
+      "#e11d48",
+      "#16a34a",
+      "#7c3aed",
+      "#ea580c",
+      "#0891b2",
+      "#4f46e5"
+    ];
 
-function markerColor(type){
+    function getMarkerColor(type) {
+      return markerColors[type] || "#374151";
+    }
 
-    if(type === "holiday") return "blue";
-    if(type === "work") return "red";
-    if(type === "lived") return "green";
+    function createMarker(stop) {
+      return L.circleMarker([stop.lat, stop.lng], {
+        radius: 8,
+        color: getMarkerColor(stop.type),
+        fillColor: getMarkerColor(stop.type),
+        fillOpacity: 0.85,
+        weight: 2
+      });
+    }
 
-    return "gray";
-}
+    function escapeHtml(text) {
+      if (text === null || text === undefined) return "";
+      return String(text)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
 
-fetch("places.json")
-.then(res => res.json())
-.then(data => {
+    function buildPopup(trip, stop, stopIndex, totalStops) {
+      let html = `
+        <div class="popup-title">${escapeHtml(stop.name)}</div>
+        <div class="popup-subtitle">
+          ${escapeHtml(trip.title)}
+        </div>
+        <div><strong>From:</strong> ${escapeHtml(trip.startDate || "Unknown")}</div>
+        <div><strong>To:</strong> ${escapeHtml(trip.endDate || "Unknown")}</div>
+        <div><strong>Trip group:</strong> ${escapeHtml(trip.group || "Unknown")}</div>
+        <div><strong>Stop type:</strong> ${escapeHtml(stop.type)}</div>
+        <div><strong>Stop:</strong> ${stopIndex + 1} of ${totalStops}</div>
+      `;
 
-    data.forEach(place => {
+      if (stop.nights) {
+        html += `<div><strong>Nights:</strong> ${escapeHtml(stop.nights)}</div>`;
+      }
 
-        var marker = L.circleMarker(
-            [place.lat, place.lng],
-            {
-                radius:8,
-                color:markerColor(place.type),
-                fillOpacity:0.8
-            }
-        ).addTo(map);
+      if (stop.notes) {
+        html += `<div class="popup-notes"><strong>Stop notes:</strong> ${escapeHtml(stop.notes)}</div>`;
+      }
 
-        var popup = "<b>"+place.name+"</b><br>";
+      if (trip.notes) {
+        html += `<div class="popup-notes"><strong>Trip notes:</strong> ${escapeHtml(trip.notes)}</div>`;
+      }
 
-        popup += "Type: "+place.type+"<br>";
+      return html;
+    }
 
-        if(place.year)
-        popup += "Date: "+place.date+"<br>";
+    function addLegend() {
+      const legend = L.control({ position: "bottomright" });
 
-        if(place.companions)
-        popup += "With: "+place.companions+"<br>";
+      legend.onAdd = function () {
+        const div = L.DomUtil.create("div", "legend");
+        div.innerHTML = `
+          <h4>Stops</h4>
+          <div class="legend-item">
+            <span class="legend-swatch" style="background:${markerColors.transit}"></span>
+            Transit
+          </div>
+          <div class="legend-item">
+            <span class="legend-swatch" style="background:${markerColors.stopover}"></span>
+            Stopover
+          </div>
+          <div class="legend-item">
+            <span class="legend-swatch" style="background:${markerColors.destination}"></span>
+            Destination
+          </div>
+        `;
+        return div;
+      };
 
-        if(place.notes)
-        popup += place.notes;
+      legend.addTo(map);
+    }
 
-        marker.bindPopup(popup);
+    fetch("trips.json")
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`Could not load trips.json (${response.status})`);
+        }
+        return response.json();
+      })
+      .then(trips => {
+        const bounds = [];
 
-    });
+        trips.forEach((trip, tripIndex) => {
+          const stopPoints = trip.stops.map(stop => [stop.lat, stop.lng]);
 
-});
+          if (stopPoints.length > 1) {
+            L.polyline(stopPoints, {
+              color: routeColors[tripIndex % routeColors.length],
+              weight: 3,
+              opacity: 0.7
+            }).addTo(map);
+          }
 
-</script>
+          trip.stops.forEach((stop, stopIndex) => {
+            const marker = createMarker(stop).addTo(map);
 
+            marker.bindPopup(
+              buildPopup(trip, stop, stopIndex, trip.stops.length)
+            );
+
+            bounds.push([stop.lat, stop.lng]);
+          });
+        });
+
+        if (bounds.length > 0) {
+          map.fitBounds(bounds, { padding: [30, 30] });
+        }
+
+        addLegend();
+      })
+      .catch(error => {
+        console.error(error);
+        alert("Could not load trip data. Check trips.json and try again.");
+      });
+  </script>
 </body>
 </html>
