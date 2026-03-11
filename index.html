@@ -1,14 +1,15 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Where has Stephen been?</title>
+<title>Where I've Been</title>
 
 <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
 
 <style>
-#map { height: 100vh; }
-body { margin:0; font-family:sans-serif; }
+body { margin:0; font-family:Arial; }
+#map { height:100vh; }
 </style>
+
 </head>
 
 <body>
@@ -19,23 +20,54 @@ body { margin:0; font-family:sans-serif; }
 
 <script>
 
-var map = L.map('map').setView([51.5074, -0.1278], 3);
+var map = L.map('map').setView([40,10],2);
 
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
- attribution: '© OpenStreetMap'
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+ attribution:'© OpenStreetMap'
 }).addTo(map);
 
-L.marker([51.5074,-0.1278])
-.addTo(map)
-.bindPopup("London");
+function markerColor(type){
 
-L.marker([48.8566,2.3522])
-.addTo(map)
-.bindPopup("Paris");
+    if(type === "holiday") return "blue";
+    if(type === "work") return "red";
+    if(type === "lived") return "green";
 
-L.marker([40.7128,-74.0060])
-.addTo(map)
-.bindPopup("New York");
+    return "gray";
+}
+
+fetch("places.json")
+.then(res => res.json())
+.then(data => {
+
+    data.forEach(place => {
+
+        var marker = L.circleMarker(
+            [place.lat, place.lng],
+            {
+                radius:8,
+                color:markerColor(place.type),
+                fillOpacity:0.8
+            }
+        ).addTo(map);
+
+        var popup = "<b>"+place.name+"</b><br>";
+
+        popup += "Type: "+place.type+"<br>";
+
+        if(place.year)
+        popup += "Year: "+place.year+"<br>";
+
+        if(place.companions)
+        popup += "With: "+place.companions+"<br>";
+
+        if(place.notes)
+        popup += place.notes;
+
+        marker.bindPopup(popup);
+
+    });
+
+});
 
 </script>
 
