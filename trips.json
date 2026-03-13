@@ -1,8 +1,8 @@
 [
   {
     "title": "Family holiday to Nice",
-    "startDate": 1991-03-27,
-    "endDate": 1991-04-04,
+    "startDate": "1991-03-27",
+    "endDate": "1991-04-04",
     "group": "Family",
     "notes": "Drove to Rosslare, took a ferry to France, train to Paris for one night, then train to Nice for five nights, then returned in reverse.",
     "stops": [
@@ -43,8 +43,8 @@
   },
   {
     "title": "Weekend in Copenhagen",
-    "startDate": 2019-03-05,
-    "endDate": 2019-03-08,
+    "startDate": "2019-03-05",
+    "endDate": "2019-03-08",
     "group": "Solo",
     "notes": "Short weekend break.",
     "stops": [
