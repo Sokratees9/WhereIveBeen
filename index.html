@@ -333,32 +333,33 @@
     function replayTrip(tripData, tripIndex) {
       clearReplay();
       setActiveTripButton(tripIndex);
-
-      const bounds = L.latLngBounds(tripData.stops.map(stop => [stop.lat, stop.lng]));
+    
+      const stops = tripData.trip.stops || [];
+      if (stops.length === 0) return;
+    
+      const bounds = L.latLngBounds(stops.map(stop => [stop.lat, stop.lng]));
       map.fitBounds(bounds, { padding: [40, 40] });
-
-      if (tripData.stops.length === 0) return;
-
+    
       const replayColor = routeColors[tripIndex % routeColors.length];
       activeReplayLine = L.polyline([], {
         color: replayColor,
         weight: 6,
         opacity: 0.9
       }).addTo(map);
-
+    
       const pointsSoFar = [];
-
+    
       tripData.markers.forEach((marker, stopIndex) => {
         const timeoutId = setTimeout(() => {
-          const stop = tripData.trip.stops[stopIndex];
+          const stop = stops[stopIndex];
           const point = [stop.lat, stop.lng];
           pointsSoFar.push(point);
-
+    
           activeReplayLine.setLatLngs(pointsSoFar);
           map.panTo(point, { animate: true, duration: 0.75 });
           marker.openPopup();
         }, stopIndex * 900);
-
+    
         replayTimeouts.push(timeoutId);
       });
     }
