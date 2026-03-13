@@ -7,17 +7,16 @@
     "notes": "Drove to Rosslare, took a ferry to France, train to Paris for one night, then train to Nice for five nights, then returned in reverse.",
     "stops": [
       {
+        "name": "Maghera",
+        "lat": 54.844,
+        "lng": -6.673,
+        "type": "start"
+      },
+      {
         "name": "Rosslare, Ireland",
         "lat": 52.2500,
         "lng": -6.3400,
         "type": "transit"
-      },
-      {
-        "name": "Paris, France",
-        "lat": 48.8566,
-        "lng": 2.3522,
-        "type": "stopover",
-        "nights": 1
       },
       {
         "name": "Nice, France",
