@@ -18,10 +18,81 @@
       padding: 0;
       height: 100%;
       font-family: Arial, sans-serif;
+      background: #f8fafc;
+    }
+
+    #app {
+      display: flex;
+      height: 100vh;
+      width: 100%;
+    }
+
+    #sidebar {
+      width: 320px;
+      max-width: 40vw;
+      overflow-y: auto;
+      background: white;
+      border-right: 1px solid #dbe1e8;
+      padding: 16px;
+      box-sizing: border-box;
+    }
+
+    #sidebar h1 {
+      margin: 0 0 8px 0;
+      font-size: 22px;
+    }
+
+    #sidebar p {
+      margin: 0 0 16px 0;
+      color: #475569;
+      font-size: 14px;
+    }
+
+    .trip-button {
+      display: block;
+      width: 100%;
+      text-align: left;
+      margin-bottom: 12px;
+      padding: 12px;
+      border: 1px solid #dbe1e8;
+      border-radius: 10px;
+      background: #ffffff;
+      cursor: pointer;
+      transition: background 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
+    }
+
+    .trip-button:hover {
+      background: #f8fafc;
+      border-color: #94a3b8;
+    }
+
+    .trip-button.active {
+      border-color: #2563eb;
+      background: #eff6ff;
+    }
+
+    .trip-title {
+      font-weight: bold;
+      font-size: 15px;
+      margin-bottom: 6px;
+      color: #0f172a;
+    }
+
+    .trip-meta {
+      font-size: 13px;
+      color: #475569;
+      margin-bottom: 4px;
+    }
+
+    .trip-notes {
+      font-size: 13px;
+      color: #334155;
+      margin-top: 6px;
     }
 
     #map {
-      height: 100vh;
+      flex: 1;
+      height: 100%;
       width: 100%;
     }
 
@@ -68,10 +139,35 @@
     .popup-notes {
       margin-top: 8px;
     }
+
+    .route-highlight {
+      filter: drop-shadow(0 0 4px rgba(0,0,0,0.35));
+    }
+
+    @media (max-width: 800px) {
+      #app {
+        flex-direction: column;
+      }
+
+      #sidebar {
+        width: 100%;
+        max-width: 100%;
+        height: 240px;
+        border-right: none;
+        border-bottom: 1px solid #dbe1e8;
+      }
+    }
   </style>
 </head>
 <body>
-  <div id="map"></div>
+  <div id="app">
+    <aside id="sidebar">
+      <h1>Where I've Been</h1>
+      <p>Click a trip to zoom in and replay the route.</p>
+      <div id="trip-list"></div>
+    </aside>
+    <div id="map"></div>
+  </div>
 
   <script
     src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
@@ -87,7 +183,7 @@
     }).addTo(map);
 
     const markerColors = {
-      start: "#00FF00",
+      start: "#0B6623",
       transit: "#6b7280",
       stopover: "#f59e0b",
       destination: "#2563eb"
@@ -102,18 +198,12 @@
       "#4f46e5"
     ];
 
+    const tripLayers = [];
+    let replayTimeouts = [];
+    let activeReplayLine = null;
+
     function getMarkerColor(type) {
       return markerColors[type] || "#374151";
-    }
-
-    function createMarker(stop) {
-      return L.circleMarker([stop.lat, stop.lng], {
-        radius: 8,
-        color: getMarkerColor(stop.type),
-        fillColor: getMarkerColor(stop.type),
-        fillOpacity: 0.85,
-        weight: 2
-      });
     }
 
     function escapeHtml(text) {
@@ -126,18 +216,48 @@
         .replaceAll("'", "&#039;");
     }
 
+    function formatDisplayDate(dateString) {
+      if (!dateString) return "Unknown";
+      const date = new Date(dateString + "T00:00:00");
+      return date.toLocaleDateString(undefined, {
+        year: "numeric",
+        month: "short",
+        day: "numeric"
+      });
+    }
+
+    function getTripDurationDays(startDate, endDate) {
+      if (!startDate || !endDate) return null;
+
+      const start = new Date(startDate + "T00:00:00");
+      const end = new Date(endDate + "T00:00:00");
+
+      if (Number.isNaN(start.getTime()) || Number.isNaN(end.getTime())) {
+        return null;
+      }
+
+      const diffMs = end - start;
+      const diffDays = Math.round(diffMs / (1000 * 60 * 60 * 24)) + 1;
+
+      if (diffDays < 1) return null;
+      return diffDays;
+    }
+
     function buildPopup(trip, stop, stopIndex, totalStops) {
+      const duration = getTripDurationDays(trip.startDate, trip.endDate);
+
       let html = `
         <div class="popup-title">${escapeHtml(stop.name)}</div>
-        <div class="popup-subtitle">
-          ${escapeHtml(trip.title)}
-        </div>
-        <div><strong>From:</strong> ${escapeHtml(trip.startDate || "Unknown")}</div>
-        <div><strong>To:</strong> ${escapeHtml(trip.endDate || "Unknown")}</div>
+        <div class="popup-subtitle">${escapeHtml(trip.title)}</div>
+        <div><strong>Dates:</strong> ${escapeHtml(formatDisplayDate(trip.startDate))} → ${escapeHtml(formatDisplayDate(trip.endDate))}</div>
         <div><strong>Trip group:</strong> ${escapeHtml(trip.group || "Unknown")}</div>
         <div><strong>Stop type:</strong> ${escapeHtml(stop.type)}</div>
         <div><strong>Stop:</strong> ${stopIndex + 1} of ${totalStops}</div>
       `;
+
+      if (duration) {
+        html += `<div><strong>Duration:</strong> ${duration} day${duration === 1 ? "" : "s"}</div>`;
+      }
 
       if (stop.nights) {
         html += `<div><strong>Nights:</strong> ${escapeHtml(stop.nights)}</div>`;
@@ -152,6 +272,16 @@
       }
 
       return html;
+    }
+
+    function createMarker(stop) {
+      return L.circleMarker([stop.lat, stop.lng], {
+        radius: 8,
+        color: getMarkerColor(stop.type),
+        fillColor: getMarkerColor(stop.type),
+        fillOpacity: 0.85,
+        weight: 2
+      });
     }
 
     function addLegend() {
@@ -184,6 +314,80 @@
       legend.addTo(map);
     }
 
+    function clearReplay() {
+      replayTimeouts.forEach(timeoutId => clearTimeout(timeoutId));
+      replayTimeouts = [];
+
+      if (activeReplayLine) {
+        map.removeLayer(activeReplayLine);
+        activeReplayLine = null;
+      }
+    }
+
+    function setActiveTripButton(tripIndex) {
+      document.querySelectorAll(".trip-button").forEach((button, index) => {
+        button.classList.toggle("active", index === tripIndex);
+      });
+    }
+
+    function replayTrip(tripData, tripIndex) {
+      clearReplay();
+      setActiveTripButton(tripIndex);
+
+      const bounds = L.latLngBounds(tripData.stops.map(stop => [stop.lat, stop.lng]));
+      map.fitBounds(bounds, { padding: [40, 40] });
+
+      if (tripData.stops.length === 0) return;
+
+      const replayColor = routeColors[tripIndex % routeColors.length];
+      activeReplayLine = L.polyline([], {
+        color: replayColor,
+        weight: 6,
+        opacity: 0.9
+      }).addTo(map);
+
+      const pointsSoFar = [];
+
+      tripData.markers.forEach((marker, stopIndex) => {
+        const timeoutId = setTimeout(() => {
+          const stop = tripData.trip.stops[stopIndex];
+          const point = [stop.lat, stop.lng];
+          pointsSoFar.push(point);
+
+          activeReplayLine.setLatLngs(pointsSoFar);
+          map.panTo(point, { animate: true, duration: 0.75 });
+          marker.openPopup();
+        }, stopIndex * 900);
+
+        replayTimeouts.push(timeoutId);
+      });
+    }
+
+    function renderTripList(tripLayers) {
+      const tripList = document.getElementById("trip-list");
+      tripList.innerHTML = "";
+
+      tripLayers.forEach((tripData, tripIndex) => {
+        const trip = tripData.trip;
+        const duration = getTripDurationDays(trip.startDate, trip.endDate);
+
+        const button = document.createElement("button");
+        button.className = "trip-button";
+        button.type = "button";
+
+        button.innerHTML = `
+          <div class="trip-title">${escapeHtml(trip.title)}</div>
+          <div class="trip-meta">${escapeHtml(formatDisplayDate(trip.startDate))} → ${escapeHtml(formatDisplayDate(trip.endDate))}</div>
+          <div class="trip-meta">${duration ? `${duration} day${duration === 1 ? "" : "s"}` : "Duration unknown"} · ${escapeHtml(trip.group || "Unknown")}</div>
+          <div class="trip-meta">${trip.stops.length} stop${trip.stops.length === 1 ? "" : "s"}</div>
+          ${trip.notes ? `<div class="trip-notes">${escapeHtml(trip.notes)}</div>` : ""}
+        `;
+
+        button.addEventListener("click", () => replayTrip(tripData, tripIndex));
+        tripList.appendChild(button);
+      });
+    }
+
     fetch("trips.json")
       .then(response => {
         if (!response.ok) {
@@ -192,35 +396,43 @@
         return response.json();
       })
       .then(trips => {
-        const bounds = [];
+        const allBounds = [];
 
         trips.forEach((trip, tripIndex) => {
           const stopPoints = trip.stops.map(stop => [stop.lat, stop.lng]);
+          const routeColor = routeColors[tripIndex % routeColors.length];
+          const markers = [];
 
+          let routeLine = null;
           if (stopPoints.length > 1) {
-            L.polyline(stopPoints, {
-              color: routeColors[tripIndex % routeColors.length],
+            routeLine = L.polyline(stopPoints, {
+              color: routeColor,
               weight: 3,
-              opacity: 0.7
+              opacity: 0.45
             }).addTo(map);
           }
 
           trip.stops.forEach((stop, stopIndex) => {
             const marker = createMarker(stop).addTo(map);
+            marker.bindPopup(buildPopup(trip, stop, stopIndex, trip.stops.length));
+            markers.push(marker);
+            allBounds.push([stop.lat, stop.lng]);
+          });
 
-            marker.bindPopup(
-              buildPopup(trip, stop, stopIndex, trip.stops.length)
-            );
-
-            bounds.push([stop.lat, stop.lng]);
+          tripLayers.push({
+            trip,
+            tripIndex,
+            markers,
+            routeLine
           });
         });
 
-        if (bounds.length > 0) {
-          map.fitBounds(bounds, { padding: [30, 30] });
+        if (allBounds.length > 0) {
+          map.fitBounds(allBounds, { padding: [30, 30] });
         }
 
         addLegend();
+        renderTripList(tripLayers);
       })
       .catch(error => {
         console.error(error);
