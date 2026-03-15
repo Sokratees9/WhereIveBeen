@@ -48,6 +48,55 @@
       font-size: 14px;
     }
 
+    #timeline-panel {
+      margin-bottom: 18px;
+      padding: 12px;
+      border: 1px solid #dbe1e8;
+      border-radius: 10px;
+      background: #f8fafc;
+    }
+
+    #timeline-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      font-size: 14px;
+      color: #334155;
+    }
+
+    #slider-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    #year-min,
+    #year-max {
+      font-size: 13px;
+      color: #475569;
+      min-width: 36px;
+      text-align: center;
+    }
+
+    #year-slider {
+      flex: 1;
+      margin: 0;
+    }
+
+    #show-all-btn {
+      border: 1px solid #cbd5e1;
+      background: white;
+      border-radius: 8px;
+      padding: 8px 10px;
+      cursor: pointer;
+    }
+
+    #show-all-btn:hover {
+      background: #f1f5f9;
+    }
+
     .trip-button {
       display: block;
       width: 100%;
@@ -160,6 +209,18 @@
   </style>
 </head>
 <body>
+  <div id="timeline-panel">
+    <div id="timeline-header">
+      <strong>Show trips up to year: <span id="year-value">All</span></strong>
+      <button id="show-all-btn" type="button">Show all</button>
+    </div>
+
+    <div id="slider-row">
+      <span id="year-min"></span>
+      <input type="range" id="year-slider" min="1990" max="2025" value="2025" step="1" />
+      <span id="year-max"></span>
+    </div>
+  </div>
   <div id="app">
     <aside id="sidebar">
       <h1>Where I've Been</h1>
@@ -336,6 +397,10 @@
     
       const stops = tripData.trip.stops || [];
       if (stops.length === 0) return;
+
+      if (!map.hasLayer(tripData.layerGroup)) {
+        tripData.layerGroup.addTo(map);
+      }
     
       const bounds = L.latLngBounds(stops.map(stop => [stop.lat, stop.lng]));
       map.fitBounds(bounds, { padding: [40, 40] });
@@ -384,9 +449,35 @@
           ${trip.notes ? `<div class="trip-notes">${escapeHtml(trip.notes)}</div>` : ""}
         `;
 
-        button.addEventListener("click", () => replayTrip(tripData, tripIndex));
+        button.addEventListener("click", () => replayTrip(tripData, tripData.tripIndex));
         tripList.appendChild(button);
       });
+    }
+
+    function getTripYear(trip) {
+      if (trip.startDate) {
+        const year = new Date(trip.startDate + "T00:00:00").getFullYear();
+        if (!Number.isNaN(year)) return year;
+      }
+
+      if (trip.year) return trip.year;
+
+      return null;
+    }
+
+    function getYearRange(trips) {
+      const years = trips
+        .map(getTripYear)
+        .filter(year => year !== null);
+
+      if (years.length === 0) {
+        return { min: 1979, max: 2025 };
+      }
+
+      return {
+        min: Math.min(...years),
+        max: Math.max(...years)
+      };
     }
 
     fetch("trips.json")
@@ -397,12 +488,27 @@
         return response.json();
       })
       .then(trips => {
+        const yearRange = getYearRange(trips);
         const allBounds = [];
+
+        const yearSlider = document.getElementById("year-slider");
+        const yearValue = document.getElementById("year-value");
+        const yearMin = document.getElementById("year-min");
+        const yearMax = document.getElementById("year-max");
+        const showAllBtn = document.getElementById("show-all-btn");
+
+        yearSlider.min = yearRange.min;
+        yearSlider.max = yearRange.max;
+        yearSlider.value = yearRange.max;
+        yearMin.textContent = yearRange.min;
+        yearMax.textContent = yearRange.max;
+        yearValue.textContent = yearRange.max;
 
         trips.forEach((trip, tripIndex) => {
           const stopPoints = trip.stops.map(stop => [stop.lat, stop.lng]);
           const routeColor = routeColors[tripIndex % routeColors.length];
           const markers = [];
+          const layerGroup = L.layerGroup();
 
           let routeLine = null;
           if (stopPoints.length > 1) {
@@ -410,22 +516,77 @@
               color: routeColor,
               weight: 3,
               opacity: 0.45
-            }).addTo(map);
+            });
+            layerGroup.addLayer(routeLine);
           }
 
           trip.stops.forEach((stop, stopIndex) => {
-            const marker = createMarker(stop).addTo(map);
+            const marker = createMarker(stop);
             marker.bindPopup(buildPopup(trip, stop, stopIndex, trip.stops.length));
+            layerGroup.addLayer(marker);
             markers.push(marker);
             allBounds.push([stop.lat, stop.lng]);
           });
+
+          layerGroup.addTo(map);
 
           tripLayers.push({
             trip,
             tripIndex,
             markers,
-            routeLine
+            routeLine,
+            layerGroup
           });
+        });
+
+        function applyYearFilter(selectedYear) {
+          clearReplay();
+
+          const visibleBounds = [];
+
+          tripLayers.forEach(tripData => {
+            const tripYear = getTripYear(tripData.trip);
+            const shouldShow = selectedYear === null || (tripYear !== null && tripYear <= selectedYear);
+
+            if (shouldShow) {
+              if (!map.hasLayer(tripData.layerGroup)) {
+                tripData.layerGroup.addTo(map);
+              }
+
+              tripData.trip.stops.forEach(stop => {
+                visibleBounds.push([stop.lat, stop.lng]);
+              });
+            } else {
+              if (map.hasLayer(tripData.layerGroup)) {
+                map.removeLayer(tripData.layerGroup);
+              }
+            }
+          });
+
+          renderTripList(
+            selectedYear === null
+              ? tripLayers
+              : tripLayers.filter(tripData => {
+                  const tripYear = getTripYear(tripData.trip);
+                  return tripYear !== null && tripYear <= selectedYear;
+                })
+          );
+
+          if (visibleBounds.length > 0) {
+            map.fitBounds(visibleBounds, { padding: [30, 30] });
+          }
+        }
+
+        yearSlider.addEventListener("input", () => {
+          const selectedYear = Number(yearSlider.value);
+          yearValue.textContent = selectedYear;
+          applyYearFilter(selectedYear);
+        });
+
+        showAllBtn.addEventListener("click", () => {
+          yearSlider.value = yearRange.max;
+          yearValue.textContent = "All";
+          applyYearFilter(null);
         });
 
         if (allBounds.length > 0) {

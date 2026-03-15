@@ -41,18 +41,179 @@
     ]
   },
   {
-    "title": "Weekend in Copenhagen",
-    "startDate": "2019-03-05",
-    "endDate": "2019-03-08",
-    "group": "Solo",
-    "notes": "Short weekend break.",
+    "title": "NYE in London",
+    "startDate": "2001-12-30",
+    "endDate": "2002-01-02",
+    "group": "Audrey",
+    "notes": "Stayed with Ada, not sure where, and met Toby and Jocelyn for a disappointing NYE evening dinner experience.",
     "stops": [
       {
-        "name": "Copenhagen, Denmark",
-        "lat": 55.6761,
-        "lng": 12.5683,
+        "name": "London, England",
+        "lat": 51.5121,
+        "lng": -0.0989,
+        "type": "destination",
+        "nights": 3
+      }
+    ]
+  },
+  {
+    "title": "Skiing In Foppolo",
+    "startDate": "1995-12-24",
+    "endDate": "1996-01-01",
+    "group": "Family",
+    "notes": "Christmas present holiday, got stuck in Manchester on NYE.  First time flying for me.",
+    "stops": [
+      {
+        "name": "Bergamo, Italy",
+        "lat": 46.0448,
+        "lng": 9.7579,
+        "type": "destination",
+        "nights": 7
+      },
+      {
+        "name": "Manchester, England",
+        "lat": 53.3557,
+        "lng": -2.2772,
+        "type": "stopover",
+        "nights": 1
+      }
+    ]
+  },
+  {
+    "title": "Driving around Norway",
+    "startDate": "2004-07-22",
+    "endDate": "2004-07-29",
+    "group": "Audrey",
+    "notes": "Spent about a week driving around Norway with Bernard and Enoch.  This needs more details",
+    "stops": [
+      {
+        "name": "Oslo, Norway",
+        "lat": 59.9120,
+        "lng": 10.7339,
+        "type": "start",
+        "nights": 2
+      },
+      {
+        "name": "Bergen, Norway",
+        "lat": 60.3904,
+        "lng": 5.3147,
         "type": "destination",
         "nights": 2
+      },
+      {
+        "name": "Ålesund, Norway",
+        "lat": 62.4722,
+        "lng": 6.1502,
+        "type": "destination",
+        "nights": 2
+      }
+    ]
+  },
+  {
+    "title": "Skiing In Andorra",
+    "startDate": "1999-01-04",
+    "endDate": "1999-01-11",
+    "group": "Family",
+    "notes": "Christmas present holiday again, away with part of the Mullan Family.  Check actual dates",
+    "stops": [
+      {
+        "name": "Andorra la Vella, Andorra",
+        "lat": 42.5066,
+        "lng": 1.5213,
+        "type": "destination",
+        "nights": 7
+      }
+    ]
+  },
+  {
+    "title": "Day trip to Salzburg",
+    "startDate": "2000-04-22",
+    "endDate": "2000-04-22",
+    "group": "Friends",
+    "notes": "The lads were in Munich, so we jumped on a train to Austria with Aido, Audrey and Ada. Check actual date",
+    "stops": [
+      {
+        "name": "Salzburg, Austria",
+        "lat": 47.8007,
+        "lng": 13.0454,
+        "type": "destination",
+        "nights": 0
+      }
+    ]
+  },
+  {
+    "title": "Bosnia with Aleks and Dan",
+    "startDate": "2003-11",
+    "endDate": "2003-11",
+    "group": "Friends",
+    "notes": "Got the bus from Munich and had a day trip to Banja Luka",
+    "stops": [
+      {
+        "name": "Gradiska, Bosnia",
+        "lat": 45.1465,
+        "lng": 17.2558,
+        "type": "destination",
+        "nights": 3
+      },
+      {
+        "name": "Banja Luka, Bosnia",
+        "lat": 44.7717,
+        "lng": 17.1914,
+        "type": "destination",
+        "nights": 0
+      }
+    ]
+  },
+  {
+    "title": "Belgium With Mulholland",
+    "startDate": "2000-06-18",
+    "endDate": "2000-06-21",
+    "group": "Friends",
+    "notes": "Flew in and out of Dublin on my first cheap (Ryanair) flight. Check actual date",
+    "stops": [
+      {
+        "name": "Leuven, Belgium",
+        "lat": 50.8795,
+        "lng": 4.7036,
+        "type": "destination",
+        "nights": 2
+      },
+      {
+        "name": "Brussels, Belgium",
+        "lat": 50.8466,
+        "lng": 4.3585,
+        "type": "destination",
+        "nights": 1
+      }
+    ]
+  },
+  {
+    "title": "Hong Kong and China",
+    "startDate": "2004-02",
+    "endDate": "2004-02",
+    "group": "Audrey",
+    "notes": "Spent LNY in HK with Audrey and her family, them travelled to Shanghai and Hangzhou",
+    "stops": [
+      {
+        "name": "Hong Kong",
+        "lat": 22.3258,
+        "lng": 114.1578,
+        "type": "destination",
+        "nights": 6
+      },
+      {
+        "name": "Shanghai, China",
+        "lat": 31.2505,
+        "lng": 121.4727,
+        "type": "destination",
+        "nights": 5
+      },
+      {
+        "name": "Hangzhou, China",
+        "lat": 30.2831,
+        "lng": 120.1506,
+        "type": "destination",
+        "nights": 4
       }
     ]
   }
