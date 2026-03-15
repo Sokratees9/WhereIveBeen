@@ -110,6 +110,29 @@
     ]
   },
   {
+    "title": "Visiting Audrey",
+    "startDate": "2001-08-22",
+    "endDate": "2004-09-12",
+    "group": "Solo",
+    "notes": "Went to Medieval times with Katie, Audrey, Niall and Paul",
+    "stops": [
+      {
+        "name": "Toronto, Canada",
+        "lat": 43.65,
+        "lng": -79.39,
+        "type": "destination",
+        "nights": 2
+      },
+      {
+        "name": "Waterloo, Canada",
+        "lat": 43.4666,
+        "lng": -80.5166,
+        "type": "destination",
+        "nights": 3
+      }
+    ]
+  },
+  {
     "title": "Skiing In Andorra",
     "startDate": "1999-01-04",
     "endDate": "1999-01-11",
@@ -138,6 +161,148 @@
         "lng": 13.0454,
         "type": "destination",
         "nights": 0
+      }
+    ]
+  },
+  {
+    "title": "Documenta",
+    "startDate": "2002-09",
+    "endDate": "2002-09",
+    "group": "Audrey",
+    "notes": "Went to Documenta in Kassel.  Paula once said she thinks her friend Lisa saw me there (or was it vice versa - how could that be possible as we never met each other).",
+    "stops": [
+      {
+        "name": "Kassel, Germany",
+        "lat": 51.3158, 
+        "lng": 9.4979,
+        "type": "destination",
+        "nights": 2
+      }
+    ]
+  },
+  {
+    "title": "Day trip to Cheimsee",
+    "startDate": "2002-08",
+    "endDate": "2002-08",
+    "group": "Audrey",
+    "notes": "Probably just a day trip to Chiemsee",
+    "stops": [
+      {
+        "name": "Chiemsee, Germany",
+        "lat": 47.8560,
+        "lng": 12.3490,
+        "type": "destination",
+        "nights": 0
+      }
+    ]
+  },
+  {
+    "title": "Nuremburg",
+    "startDate": "2002-12",
+    "endDate": "2002-12",
+    "group": "Audrey",
+    "notes": "Visiting the Chirstmas market, probably over a weekend",
+    "stops": [
+      {
+        "name": "Nuremburg, Germany",
+        "lat": 49.4538,
+        "lng": 11.0775,
+        "type": "destination",
+        "nights": 2
+      }
+    ]
+  },
+  {
+    "title": "Weekend in Hamburg",
+    "startDate": "2002",
+    "endDate": "2002",
+    "group": "Audrey",
+    "notes": "No idea when...",
+    "stops": [
+      {
+        "name": "Hamburg, Germany",
+        "lat": 53.55,
+        "lng": 10,
+        "type": "destination",
+        "nights": 3
+      }
+    ]
+  },
+  {
+    "title": "Florence and Siena",
+    "startDate": "2003",
+    "endDate": "2003",
+    "group": "Audrey",
+    "notes": "Really not sure of the dates...",
+    "stops": [
+      {
+        "name": "Florence, Germany",
+        "lat": 43.7713,
+        "lng": 11.2541,
+        "type": "destination",
+        "nights": 3
+      },
+      {
+        "name": "Siena, Germany",
+        "lat": 43.3186,
+        "lng": 11.3305,
+        "type": "destination",
+        "nights": 0
+      }
+    ]
+  },
+  {
+    "title": "Europa Park and Heidelberg",
+    "startDate": "2001-05",
+    "endDate": "2001-05",
+    "group": "Friends",
+    "notes": "Hired a car and drove with Audrey, Claire and Aaron.  First time hiring a car and driving on the other side of the road",
+    "stops": [
+      {
+        "name": "Heidelberg, Germany",
+        "lat": 49.4166,
+        "lng": 8.7166,
+        "type": "destination",
+        "nights": 2
+      },
+      {
+        "name": "Rust, Germany",
+        "lat": 48.2683,
+        "lng": 7.7208,
+        "type": "destination",
+        "nights": 1
+      }
+    ]
+  },
+  {
+    "title": "Weekend in Berlin",
+    "startDate": "2001-04",
+    "endDate": "2001-04",
+    "group": "Audrey",
+    "notes": "Weekend in Berling, took the ICE there and back",
+    "stops": [
+      {
+        "name": "Berlin, Germany",
+        "lat": 52.52,
+        "lng": 13.405,
+        "type": "destination",
+        "nights": 3
+      }
+    ]
+  },
+  {
+    "title": "Weekend in Milan",
+    "startDate": "2001-03",
+    "endDate": "2001-03",
+    "group": "Audrey",
+    "notes": "Night train to Milan back",
+    "stops": [
+      {
+        "name": "Milan, Italy",
+        "lat": 45.4669,
+        "lng": 9.19,
+        "type": "destination",
+        "nights": 3
       }
     ]
   },

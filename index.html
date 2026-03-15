@@ -21,48 +21,98 @@
       background: #f8fafc;
     }
 
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+
     #app {
       display: flex;
+      flex-direction: column;
       height: 100vh;
       width: 100%;
     }
 
-    #sidebar {
+    #timeline-shell {
+      flex: 0 0 auto;
+      background: white;
+      border-bottom: 1px solid #dbe1e8;
+      overflow: hidden;
+    }
+
+    #main-content {
+      display: flex;
+      flex: 1;
+      min-height: 0;
+      min-width: 0;
+    }
+
+    #trips-shell {
       width: 320px;
       max-width: 40vw;
-      overflow-y: auto;
+      flex: 0 0 320px;
+      min-height: 0;
       background: white;
       border-right: 1px solid #dbe1e8;
+      overflow: hidden;
+    }
+
+    #trips-details {
+      height: 100%;
+      min-height: 0;
+    }
+
+    #trips-details[open] {
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr);
+    }
+
+    #trips-details > .section-body {
+      min-height: 0;
+      overflow: hidden;
+      padding: 0;
+    }
+
+    #trips-panel {
+      height: 100%;
+      min-height: 0;
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr);
+      overflow: hidden;
       padding: 16px;
-      box-sizing: border-box;
     }
 
-    #sidebar h1 {
-      margin: 0 0 8px 0;
-      font-size: 22px;
+    #trip-list {
+      overflow-y: auto;
+      overflow-x: hidden;
+      scrollbar-gutter: stable;
     }
 
-    #sidebar p {
+    #trips-panel p {
       margin: 0 0 16px 0;
       color: #475569;
       font-size: 14px;
     }
 
     #timeline-panel {
-      margin-bottom: 18px;
-      padding: 12px;
-      border: 1px solid #dbe1e8;
-      border-radius: 10px;
-      background: #f8fafc;
+      margin-bottom: 0;
+      padding: 0;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
     }
 
     #timeline-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
+      gap: 12px;
       margin-bottom: 10px;
       font-size: 14px;
       color: #334155;
+    }
+
+    #timeline-header strong {
+      min-width: 0;
     }
 
     #slider-row {
@@ -91,10 +141,25 @@
       border-radius: 8px;
       padding: 8px 10px;
       cursor: pointer;
+      margin-left: 10px;
     }
 
     #show-all-btn:hover {
       background: #f1f5f9;
+    }
+
+    .legend-toggle {
+      background: white;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      padding: 6px 10px;
+      font-size: 13px;
+      cursor: pointer;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+    }
+
+    .legend-toggle:hover {
+      background: #f8fafc;
     }
 
     .trip-button {
@@ -141,8 +206,11 @@
 
     #map {
       flex: 1;
+      min-width: 0;
+      min-height: 0;
       height: 100%;
       width: 100%;
+      background: #dbeafe;
     }
 
     .legend {
@@ -165,13 +233,15 @@
       font-size: 13px;
     }
 
-    .legend-swatch {
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
+    .legend-triangle {
+      width: 0;
+      height: 0;
       margin-right: 8px;
-      border: 1px solid #333;
-      flex: 0 0 12px;
+      border-left: 6px solid transparent;
+      border-right: 6px solid transparent;
+      border-bottom: 10px solid var(--marker-color);
+      filter: drop-shadow(0 1px 1px rgba(0,0,0,0.5));
+      flex: 0 0 auto;
     }
 
     .popup-title {
@@ -193,41 +263,114 @@
       filter: drop-shadow(0 0 4px rgba(0,0,0,0.35));
     }
 
+    .triangle-marker div {
+      width: 0;
+      height: 0;
+      border-left: 8px solid transparent;
+      border-right: 8px solid transparent;
+      border-bottom: 14px solid var(--marker-color);
+      filter: drop-shadow(0 1px 2px rgba(0,0,0,0.5));
+    }
+
+    #timeline-shell summary,
+    #trips-details summary {
+      list-style: none;
+      cursor: pointer;
+      user-select: none;
+      padding: 12px 14px;
+      font-weight: 600;
+      font-size: 14px;
+      color: #0f172a;
+      background: #f8fafc;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    
+    #timeline-shell summary::-webkit-details-marker,
+    #trips-details summary::-webkit-details-marker {
+      display: none;
+    }
+
+    #timeline-shell summary::after,
+    #trips-details summary::after {
+      content: "▾";
+      float: right;
+      transition: transform 0.2s ease;
+    }
+
+    #timeline-shell:not([open]) summary::after,
+    #trips-details:not([open]) summary::after {
+      transform: rotate(-90deg);
+    }
+
+    #timeline-shell > .section-body {
+      padding: 12px;
+    }
+
     @media (max-width: 800px) {
-      #app {
+      #main-content {
         flex-direction: column;
       }
 
-      #sidebar {
+      #trips-shell {
         width: 100%;
         max-width: 100%;
-        height: 240px;
+        flex: 0 0 auto;
         border-right: none;
         border-bottom: 1px solid #dbe1e8;
+        min-height: 0;
+      }
+
+      #trips-panel {
+        display: flex;
+        flex-direction: column;
+        max-height: 28vh;
+        min-height: 0;
+        padding: 12px;
+      }
+
+      #trip-list {
+        flex: 1;
+        min-height: 0;
       }
     }
   </style>
+
 </head>
 <body>
-  <div id="timeline-panel">
-    <div id="timeline-header">
-      <strong>Show trips up to year: <span id="year-value">All</span></strong>
-      <button id="show-all-btn" type="button">Show all</button>
-    </div>
-
-    <div id="slider-row">
-      <span id="year-min"></span>
-      <input type="range" id="year-slider" min="1990" max="2025" value="2025" step="1" />
-      <span id="year-max"></span>
-    </div>
-  </div>
   <div id="app">
-    <aside id="sidebar">
-      <h1>Where I've Been</h1>
-      <p>Click a trip to zoom in and replay the route.</p>
-      <div id="trip-list"></div>
-    </aside>
-    <div id="map"></div>
+    <details id="timeline-shell" open>
+      <summary>Timeline</summary>
+      <div class="section-body">
+        <div id="timeline-panel">
+          <div id="timeline-header">
+            <strong>Show trips up to year: <span id="year-value">All</span></strong>
+            <button id="show-all-btn" type="button">Show all</button>
+          </div>
+
+          <div id="slider-row">
+            <span id="year-min"></span>
+            <input type="range" id="year-slider" min="1990" max="2025" value="2025" step="1" />
+            <span id="year-max"></span>
+          </div>
+        </div>
+      </div>
+    </details>
+
+    <div id="main-content">
+      <div id="trips-shell">
+        <details id="trips-details" open>
+          <summary>Trips</summary>
+          <div class="section-body">
+            <div id="trips-panel">
+              <p>Click a trip to zoom in and replay the route.</p>
+              <div id="trip-list"></div>
+            </div>
+          </div>
+        </details>
+      </div>
+
+      <div id="map"></div>
+    </div>
   </div>
 
   <script
@@ -239,15 +382,36 @@
   <script>
     const map = L.map("map").setView([50, 5], 4);
 
+    window.addEventListener("resize", scheduleTripListHeightUpdate);
+    window.addEventListener("load", scheduleTripListHeightUpdate);
+
+    document.querySelectorAll("#timeline-shell, #trips-details").forEach(section => {
+      section.addEventListener("toggle", () => {
+        setTimeout(() => {
+          map.invalidateSize();
+          scheduleTripListHeightUpdate();
+        }, 200);
+      });
+    });
+
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
       attribution: "&copy; OpenStreetMap contributors"
     }).addTo(map);
 
     const markerColors = {
       start: "#0B6623",
+      finish: "#0B6623",
       transit: "#6b7280",
       stopover: "#f59e0b",
       destination: "#2563eb"
+    };
+
+    const markerLabels = {
+      start: "Start/Finish",
+      finish: "Start/Finish",
+      transit: "Transit",
+      stopover: "Stopover",
+      destination: "Destination"
     };
 
     const routeColors = [
@@ -280,6 +444,11 @@
     function formatDisplayDate(dateString) {
       if (!dateString) return "Unknown";
       const date = new Date(dateString + "T00:00:00");
+
+      if (Number.isNaN(date.getTime())) {
+        return "Unknown";
+      }
+
       return date.toLocaleDateString(undefined, {
         year: "numeric",
         month: "short",
@@ -336,43 +505,128 @@
     }
 
     function createMarker(stop) {
-      return L.circleMarker([stop.lat, stop.lng], {
-        radius: 8,
-        color: getMarkerColor(stop.type),
-        fillColor: getMarkerColor(stop.type),
-        fillOpacity: 0.85,
-        weight: 2
+      const color = getMarkerColor(stop.type);
+
+      const icon = L.divIcon({
+        className: "triangle-marker",
+        html: `<div style="--marker-color:${color}"></div>`,
+        iconSize: [16, 16],
+        iconAnchor: [8, 14]  // bottom center of triangle
       });
+
+      return L.marker([stop.lat, stop.lng], { icon });
     }
 
-    function addLegend() {
-      const legend = L.control({ position: "bottomright" });
+    let legendControl = null;
+    let legendVisible = true;
 
-      legend.onAdd = function () {
+    function addLegend() {
+      legendControl = L.control({ position: "bottomright" });
+
+      legendControl.onAdd = function () {
         const div = L.DomUtil.create("div", "legend");
+
+        const itemsHtml = getLegendEntries()
+          .map(entry => `
+            <div class="legend-item">
+              <span class="legend-triangle" style="--marker-color:${entry.color}"></span>
+              ${escapeHtml(entry.label)}
+            </div>
+          `)
+          .join("");
+
         div.innerHTML = `
           <h4>Stops</h4>
-          <div class="legend-item">
-            <span class="legend-swatch" style="background:${markerColors.start}"></span>
-            Start/Finish
-          </div>
-          <div class="legend-item">
-            <span class="legend-swatch" style="background:${markerColors.transit}"></span>
-            Transit
-          </div>
-          <div class="legend-item">
-            <span class="legend-swatch" style="background:${markerColors.stopover}"></span>
-            Stopover
-          </div>
-          <div class="legend-item">
-            <span class="legend-swatch" style="background:${markerColors.destination}"></span>
-            Destination
-          </div>
+          ${itemsHtml}
         `;
+
         return div;
       };
 
-      legend.addTo(map);
+      legendControl.addTo(map);
+      legendVisible = true;
+    }
+
+    function updateTripListHeight() {
+      const tripsDetails = document.getElementById("trips-details");
+      const tripList = document.getElementById("trip-list");
+
+      if (!tripsDetails || !tripList) return;
+
+      // Let mobile keep using CSS
+      if (window.innerWidth <= 800) {
+        tripList.style.height = "";
+        return;
+      }
+
+      if (!tripsDetails.open) {
+        tripList.style.height = "0px";
+        return;
+      }
+
+      const listRect = tripList.getBoundingClientRect();
+      const detailsRect = tripsDetails.getBoundingClientRect();
+
+      // Space from top of trip list to bottom of sidebar/details
+      const available = detailsRect.bottom - listRect.top - 12;
+
+      tripList.style.height = `${Math.max(120, Math.floor(available))}px`;
+    }
+
+    function scheduleTripListHeightUpdate() {
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          updateTripListHeight();
+        });
+      });
+    }
+
+    function addLegendToggle() {
+      const toggleControl = L.control({ position: "topright" });
+
+      toggleControl.onAdd = function () {
+        const button = L.DomUtil.create("button", "legend-toggle");
+        button.type = "button";
+        button.textContent = "Hide legend";
+
+        L.DomEvent.disableClickPropagation(button);
+        L.DomEvent.on(button, "click", function (e) {
+          L.DomEvent.stopPropagation(e);
+          L.DomEvent.preventDefault(e);
+
+          if (legendVisible) {
+            map.removeControl(legendControl);
+            legendVisible = false;
+            button.textContent = "Show legend";
+          } else {
+            legendControl.addTo(map);
+            legendVisible = true;
+            button.textContent = "Hide legend";
+          }
+        });
+
+        return button;
+      };
+
+      toggleControl.addTo(map);
+    }
+
+    function getLegendEntries() {
+      const seen = new Set();
+      const entries = [];
+
+      Object.entries(markerLabels).forEach(([type, label]) => {
+        if (seen.has(label)) return;
+        seen.add(label);
+
+        entries.push({
+          type,
+          label,
+          color: markerColors[type]
+        });
+      });
+
+      return entries;
     }
 
     function clearReplay() {
@@ -386,66 +640,78 @@
     }
 
     function setActiveTripButton(tripIndex) {
-      document.querySelectorAll(".trip-button").forEach((button, index) => {
-        button.classList.toggle("active", index === tripIndex);
+      document.querySelectorAll(".trip-button").forEach(button => {
+        button.classList.toggle(
+          "active",
+          Number(button.dataset.tripIndex) === tripIndex
+        );
       });
     }
 
     function replayTrip(tripData, tripIndex) {
       clearReplay();
       setActiveTripButton(tripIndex);
-    
+
       const stops = tripData.trip.stops || [];
       if (stops.length === 0) return;
 
       if (!map.hasLayer(tripData.layerGroup)) {
         tripData.layerGroup.addTo(map);
       }
-    
+
       const bounds = L.latLngBounds(stops.map(stop => [stop.lat, stop.lng]));
       map.fitBounds(bounds, { padding: [40, 40] });
-    
+
       const replayColor = routeColors[tripIndex % routeColors.length];
       activeReplayLine = L.polyline([], {
         color: replayColor,
         weight: 6,
         opacity: 0.9
       }).addTo(map);
-    
+
       const pointsSoFar = [];
-    
+
       tripData.markers.forEach((marker, stopIndex) => {
         const timeoutId = setTimeout(() => {
           const stop = stops[stopIndex];
+          if (!stop) return;
+
           const point = [stop.lat, stop.lng];
           pointsSoFar.push(point);
-    
+
           activeReplayLine.setLatLngs(pointsSoFar);
           map.panTo(point, { animate: true, duration: 0.75 });
           marker.openPopup();
         }, stopIndex * 900);
-    
+
         replayTimeouts.push(timeoutId);
       });
     }
 
-    function renderTripList(tripLayers) {
+    function renderTripList(tripsToRender) {
       const tripList = document.getElementById("trip-list");
       tripList.innerHTML = "";
 
-      tripLayers.forEach((tripData, tripIndex) => {
+      if (tripsToRender.length === 0) {
+        tripList.innerHTML = `<div class="trip-meta">No trips match this filter.</div>`;
+        return;
+      }
+
+      tripsToRender.forEach(tripData => {
         const trip = tripData.trip;
+        const stops = trip.stops || [];
         const duration = getTripDurationDays(trip.startDate, trip.endDate);
 
         const button = document.createElement("button");
         button.className = "trip-button";
         button.type = "button";
+        button.dataset.tripIndex = tripData.tripIndex;
 
         button.innerHTML = `
           <div class="trip-title">${escapeHtml(trip.title)}</div>
           <div class="trip-meta">${escapeHtml(formatDisplayDate(trip.startDate))} → ${escapeHtml(formatDisplayDate(trip.endDate))}</div>
           <div class="trip-meta">${duration ? `${duration} day${duration === 1 ? "" : "s"}` : "Duration unknown"} · ${escapeHtml(trip.group || "Unknown")}</div>
-          <div class="trip-meta">${trip.stops.length} stop${trip.stops.length === 1 ? "" : "s"}</div>
+          <div class="trip-meta">${stops.length} stop${stops.length === 1 ? "" : "s"}</div>
           ${trip.notes ? `<div class="trip-notes">${escapeHtml(trip.notes)}</div>` : ""}
         `;
 
@@ -505,7 +771,8 @@
         yearValue.textContent = yearRange.max;
 
         trips.forEach((trip, tripIndex) => {
-          const stopPoints = trip.stops.map(stop => [stop.lat, stop.lng]);
+          const stops = trip.stops || [];
+          const stopPoints = stops.map(stop => [stop.lat, stop.lng]);
           const routeColor = routeColors[tripIndex % routeColors.length];
           const markers = [];
           const layerGroup = L.layerGroup();
@@ -520,9 +787,9 @@
             layerGroup.addLayer(routeLine);
           }
 
-          trip.stops.forEach((stop, stopIndex) => {
+          stops.forEach((stop, stopIndex) => {
             const marker = createMarker(stop);
-            marker.bindPopup(buildPopup(trip, stop, stopIndex, trip.stops.length));
+            marker.bindPopup(buildPopup(trip, stop, stopIndex, stops.length));
             layerGroup.addLayer(marker);
             markers.push(marker);
             allBounds.push([stop.lat, stop.lng]);
@@ -541,6 +808,7 @@
 
         function applyYearFilter(selectedYear) {
           clearReplay();
+          setActiveTripButton(-1);
 
           const visibleBounds = [];
 
@@ -553,7 +821,7 @@
                 tripData.layerGroup.addTo(map);
               }
 
-              tripData.trip.stops.forEach(stop => {
+              (tripData.trip.stops || []).forEach(stop => {
                 visibleBounds.push([stop.lat, stop.lng]);
               });
             } else {
@@ -571,6 +839,8 @@
                   return tripYear !== null && tripYear <= selectedYear;
                 })
           );
+
+          scheduleTripListHeightUpdate();
 
           if (visibleBounds.length > 0) {
             map.fitBounds(visibleBounds, { padding: [30, 30] });
@@ -594,7 +864,9 @@
         }
 
         addLegend();
+        addLegendToggle();
         renderTripList(tripLayers);
+        scheduleTripListHeightUpdate();
       })
       .catch(error => {
         console.error(error);
