@@ -57,6 +57,102 @@
     ]
   },
   {
+    "title": "Summer holidays in Portstewart",
+    "startDate": "1985",
+    "endDate": "1996",
+    "group": "Family",
+    "notes": "Spent a week most summers in Seamus Mullan's house in Portstewart",
+    "stops": [
+      {
+        "name": "Portstewart, Ireland",
+        "lat": 55.18,
+        "lng": -6.711,
+        "type": "destination",
+        "nights": 7
+      }
+    ]
+  },
+  {
+    "title": "Cousins in Ballycastle",
+    "startDate": "1987",
+    "endDate": "1995",
+    "group": "Family",
+    "notes": "Went here every year for the Lammas Fair when young, plus a couple of holidays with the O'Neills",
+    "stops": [
+      {
+        "name": "Ballycastle, Ireland",
+        "lat": 55.2001,
+        "lng": -6.2539,
+        "type": "destination",
+        "nights": 4
+      }
+    ]
+  },
+  {
+    "title": "Cousins in Portarlington",
+    "startDate": "1985",
+    "endDate": "1993",
+    "group": "Family",
+    "notes": "Visited them fairly often, despite being so far away, sometimes I stayed down by myself for a few days",
+    "stops": [
+      {
+        "name": "Portarlington, Ireland",
+        "lat": 53.1479,
+        "lng": -7.1288,
+        "type": "destination",
+        "nights": 4
+      }
+    ]
+  },
+  {
+    "title": "Ireland's Grand Slam",
+    "startDate": "2009-03-21",
+    "endDate": "2009-03-21",
+    "group": "Friends",
+    "notes": "Day trip to Cardiff for the last game of the 6 nations with Kieran, Ryan, Audrey and Sarah.  Just watched the game in a pub",
+    "stops": [
+      {
+        "name": "Cardiff, Wales",
+        "lat": 51.4816,
+        "lng": -3.1791,
+        "type": "destination",
+        "nights": 0
+      }
+    ]
+  },
+  {
+    "title": "Cousins in Banagher",
+    "startDate": "1986",
+    "endDate": "1991",
+    "group": "Family",
+    "notes": "Visited them probably only a couple of times, don't think we ever stayed down, cycled there in 2023 from Clara",
+    "stops": [
+      {
+        "name": "Banagher, Ireland",
+        "lat": 53.1877,
+        "lng": -7.9772,
+        "type": "destination",
+        "nights": 0
+      }
+    ]
+  },
+  {
+    "title": "Gaeltacht",
+    "startDate": "1991-07",
+    "endDate": "1991-07",
+    "group": "Solo",
+    "notes": "Speant about 10 days or so at the Gaeltacht in Teelin, family came to visit on the Sunday",
+    "stops": [
+      {
+        "name": "Teelin, Ireland",
+        "lat": 54.6335,
+        "lng": -8.6415,
+        "type": "destination",
+        "nights": 10
+      }
+    ]
+  },
+  {
     "title": "Skiing In Foppolo",
     "startDate": "1995-12-24",
     "endDate": "1996-01-01",
@@ -76,6 +172,88 @@
         "lng": -2.2772,
         "type": "stopover",
         "nights": 1
+      }
+    ]
+  },
+  {
+    "title": "Dusseldorf and Neandertal",
+    "startDate": "2009-12-12",
+    "endDate": "2009-12-13",
+    "group": "Friends",
+    "notes": "Quick weekend trip to Neandertal with Audrey, Oli and Jess",
+    "stops": [
+      {
+        "name": "Neandertal, Germany",
+        "lat": 51.2261,
+        "lng": 6.9510,
+        "type": "destination",
+        "nights": 0
+      },
+      {
+        "name": "Düsseldorf, Germany",
+        "lat": 51.2256,
+        "lng": 6.7767,
+        "type": "destination",
+        "nights": 1
+      }
+    ]
+  },
+  {
+    "title": "Epic trip from Europe to Vietnam and back",
+    "startDate": "2010-03-23",
+    "endDate": "2010-12-16",
+    "group": "Audrey",
+    "notes": "Travelled from Europe to Vietnam without flying, and then back again, this time with a couple of flights",
+    "stops": [
+      {
+        "name": "London, England",
+        "lat": 51.5561,
+        "lng": 0.0000,
+        "startDate": "2010-03-23",
+        "endDate": "2010-03-23",
+        "type": "start",
+        "nights": 0,
+        "notes": "Start of trip, packed the car and travelled via Holyhead back home."
+      },
+      {
+        "name": "Swatragh, Ireland",
+        "lat": 54.8764,
+        "lng": -6.6633,
+        "startDate": "2010-03-23",
+        "endDate": "2010-03-29",
+        "type": "stopover",
+        "nights": 6,
+        "notes": "Stayed with mum and dad for a few days while preparing the last things for the big trip..."
+      },
+      {
+        "name": "Munich, Germany",
+        "lat": 48.1341,
+        "lng": 11.5761,
+        "startDate": "2010-03-29",
+        "endDate": "2010-04-03",
+        "type": "destination",
+        "nights": 5,
+        "notes": "Flew to Munich, this would be the last time in the air for a long time..."
+      },
+      {
+        "name": "Hallstatt, Austria",
+        "lat": 47.5620,
+        "lng": 13.6486,
+        "startDate": "2010-04-03",
+        "endDate": "2010-04-05",
+        "type": "destination",
+        "nights": 2,
+        "notes": "Train to Hallstatt, lovely little village and we stayed in a delightful BnB"
+      },
+      {
+        "name": "Bratislava, Slovakia",
+        "lat": 48.1438,
+        "lng": 17.1097,
+        "startDate": "2010-04-05",
+        "endDate": "2010-04-06",
+        "type": "destination",
+        "nights": 1,
+        "notes": "Stayed in a rather strange artistic youth hostel (48.1598, 17.1072), and in some pub, and old woman flashed us"
       }
     ]
   },
